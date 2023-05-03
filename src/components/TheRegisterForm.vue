@@ -7,14 +7,25 @@
             type="email"
             id="email"
             v-model="email"
+            :class="{ 'is-invalid': $v.email.$error }"
             required
-            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         />
+        <div v-if="$v.email.$error" class="error-message">
+          Veuillez entrer un email valide.
+        </div>
       </div>
       <div>
         <label for="password">Mot de passe:</label>
-        <input type="password" id="password" v-model="password" required />
-        <span class="error" v-if="passwordError">Le mot de passe doit avoir une longueur minimale de 6 caractères.</span>
+        <input
+            type="password"
+            id="password"
+            v-model="password"
+            :class="{ 'is-invalid': $v.password.$error }"
+            required
+        />
+        <div v-if="$v.password.$error" class="error-message">
+          Le mot de passe doit contenir au moins 6 caractères.
+        </div>
       </div>
       <button type="submit">S'inscrire</button>
     </form>
@@ -23,39 +34,30 @@
 
 <script>
 import { ref } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, minLength } from '@vuelidate/validators';
 
 export default {
   setup() {
     const email = ref('');
     const password = ref('');
-    const passwordError = ref(false);
 
-    const validatePassword = () => {
-      if (password.value.length < 6) {
-        passwordError.value = true;
-      } else {
-        passwordError.value = false;
-      }
+    const validations = {
+      email: { required },
+      password: { required, minLength: minLength(6) }
     };
+    const $v = useVuelidate(validations, { email, password });
 
     function submitForm() {
-      console.log('Email:', email.value);
-      console.log('Mot de passe:', password.value);
+      $v.value.$touch();
+      if ($v.value.$anyError) {
+        return;
+      }
+      console.log('Email:', email.value, 'Mot de passe:', password.value);
     }
 
-    return {
-      email,
-      password,
-      passwordError,
-      validatePassword,
-      submitForm
-    };
+    return { email, password, submitForm, $v };
   },
-  watch: {
-    password: {
-      handler: 'validatePassword'
-    }
-  }
 };
 </script>
 <style scoped>
@@ -103,7 +105,9 @@ form button {
 form button:hover {
   background-color: #0051cc;
 }
-.error{
+.error-message{
   color: red;
+  font-size: 12px;
+  margin-top: 5px;
 }
 </style>
