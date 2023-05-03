@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm">
+    <form>
       <div>
         <label for="email">Email:</label>
         <input
@@ -13,30 +13,14 @@
       </div>
       <div>
         <label for="password">Mot de passe:</label>
-        <input type="password" id="password" v-model="password" required />
+        <input type="password" id="password"/>
       </div>
       <button type="submit">S'inscrire</button>
     </form>
   </div>
 </template>
 
-<script>
-import { ref } from 'vue';
 
-export default {
-  setup() {
-    const email = ref('');
-    const password = ref('');
-
-    function submitForm() {
-      console.log('Email:', email.value, 'Mot de passe:', password.value);
-      // Vous pouvez ajouter ici la logique pour envoyer les données du formulaire à votre serveur
-    }
-
-    return { email, password, submitForm };
-  },
-};
-</script>
 <style scoped>
 html,
 form {
