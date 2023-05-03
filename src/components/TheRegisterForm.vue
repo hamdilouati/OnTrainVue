@@ -14,6 +14,7 @@
       <div>
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" v-model="password" required />
+        <span class="error" v-if="passwordError">Le mot de passe doit avoir une longueur minimale de 6 caractères.</span>
       </div>
       <button type="submit">S'inscrire</button>
     </form>
@@ -27,14 +28,34 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
+    const passwordError = ref(false);
+
+    const validatePassword = () => {
+      if (password.value.length < 6) {
+        passwordError.value = true;
+      } else {
+        passwordError.value = false;
+      }
+    };
 
     function submitForm() {
-      console.log('Email:', email.value, 'Mot de passe:', password.value);
-      // Vous pouvez ajouter ici la logique pour envoyer les données du formulaire à votre serveur
+      console.log('Email:', email.value);
+      console.log('Mot de passe:', password.value);
     }
 
-    return { email, password, submitForm };
+    return {
+      email,
+      password,
+      passwordError,
+      validatePassword,
+      submitForm
+    };
   },
+  watch: {
+    password: {
+      handler: 'validatePassword'
+    }
+  }
 };
 </script>
 <style scoped>
@@ -81,5 +102,8 @@ form button {
 
 form button:hover {
   background-color: #0051cc;
+}
+.error{
+  color: red;
 }
 </style>
