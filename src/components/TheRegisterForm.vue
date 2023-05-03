@@ -2,6 +2,10 @@
   <div>
     <form @submit.prevent="submitForm">
       <div>
+        <label for="name">Nom :</label>
+        <input type="text" id="name" v-model="name" required />
+      </div>
+      <div>
         <label for="email">Email:</label>
         <input
             type="email"
@@ -36,24 +40,51 @@
 import { ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
+import gql from 'graphql-tag'
+import { useMutation } from '@vue/apollo-composable';
+
+const CREATE_USER_MUTATION = gql`
+  mutation createUser($name: String!, $email: String!, $password: String!) {
+    createUser(name: $name, email: $email, password: $password) {
+      id
+      name
+      email
+      email_verified_at
+    }
+  }
+`;
 
 export default {
   setup() {
     const email = ref('');
     const password = ref('');
+    const name = ref('');
 
     const validations = {
+      name: { required },
       email: { required },
       password: { required, minLength: minLength(6) }
     };
     const $v = useVuelidate(validations, { email, password });
+    const { mutate: createUser, onDone } = useMutation(CREATE_USER_MUTATION);
 
-    function submitForm() {
+    onDone(({ data }) => {
+      console.log('Utilisateur est créé:', data.createUser);
+    });
+    async function submitForm() {
       $v.value.$touch();
       if ($v.value.$anyError) {
         return;
       }
-      console.log('Email:', email.value, 'Mot de passe:', password.value);
+      try {
+        await createUser({
+          email: email.value,
+          password: password.value,
+          name : name.value
+        });
+      } catch (error) {
+        console.error('Erreur lors de la création de l\'utilisateur:', error);
+      }
     }
 
     return { email, password, submitForm, $v };
