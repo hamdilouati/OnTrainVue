@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheRegisterForm from '../components/TheRegisterForm.vue'
+import UserList from '../components/UserList.vue'
 </script>
 
 <template>
   <main>
-    <TheRegisterForm />
+    <UserList />
   </main>
 </template>
