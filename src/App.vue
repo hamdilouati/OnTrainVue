@@ -1,21 +1,19 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
-  <RouterView />
+  <div id="app">
+    <nav>
+      <ul>
+        <li>
+          <router-link to="/users">Liste des utilisateurs</router-link>
+        </li>
+        <li>
+          <router-link to="/register">Créer un nouvel utilisateur</router-link>
+        </li>
+      </ul>
+    </nav>
+    <router-view />
+  </div>
 </template>
 
-<style scoped>
-html,
-body {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  background-color: #f0f2f5;
-}
-
-</style>
+<script>
+export default {};
+</script>

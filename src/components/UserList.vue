@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Liste des utilisateurs</h2>
     <table class="user-table">
       <thead>
       <tr>
@@ -55,7 +54,6 @@ export default {
 <style scoped>
 .user-table {
   width: 100%;
-  min-width: 600px;
   border-collapse: collapse;
   margin-bottom: 2rem;
 }
