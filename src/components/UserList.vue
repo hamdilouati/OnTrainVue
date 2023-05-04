@@ -20,9 +20,10 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 import { gql } from 'graphql-tag';
+import { useUserStore } from '../store';
 
 const GET_USERS_QUERY = gql`
   query {
@@ -37,15 +38,17 @@ const GET_USERS_QUERY = gql`
 export default {
   setup() {
     const { onResult } = useQuery(GET_USERS_QUERY);
-    const users = ref([]);
-
+    const userStoreInstance = useUserStore();
+    let users = ref(userStoreInstance.users)
     onResult(({ data }) => {
       if (data && data.users) {
-        users.value = data.users;
+        userStoreInstance.setUsers(data.users);
+        users.value = data.users
       }
     });
-
-    return { users };
+    return {
+      users
+    };
   },
 };
 </script>

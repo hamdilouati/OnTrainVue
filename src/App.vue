@@ -8,6 +8,9 @@
         <li>
           <router-link to="/register">Créer un nouvel utilisateur</router-link>
         </li>
+        <li>
+          <router-link to="/pinia">Liste des utilisateurs avec Pinia</router-link>
+        </li>
       </ul>
     </nav>
     <router-view />
