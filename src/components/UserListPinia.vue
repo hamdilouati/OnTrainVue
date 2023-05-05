@@ -10,14 +10,14 @@
 </template>
 
 <script>
-import { useUserStore } from '../store';
+import { useUserStore } from '../stores/user';
 
 export default {
   setup() {
     const userStoreInstance = useUserStore();
 
     return {
-      users: userStoreInstance.users,
+      users: userStoreInstance.userList,
     };
   },
 };

@@ -1,53 +1,49 @@
 <template>
   <div>
-    <table class="user-table">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Email</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="user in users" :key="user.id">
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <template v-if="!loading">
+      <table class="user-table">
+        <table class="user-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </table>
+    </template>
+    <div v-else>
+      <p>Chargement des utilisateurs...</p>
+    </div>
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue';
-import { useQuery } from '@vue/apollo-composable';
-import { gql } from 'graphql-tag';
-import { useUserStore } from '../store';
-
-const GET_USERS_QUERY = gql`
-  query {
-    users {
-      id
-      name
-      email
-    }
-  }
-`;
+<script lang="ts">
+import { ref, onMounted,computed } from 'vue';
+import { useUserStore } from '../stores/user';
 
 export default {
   setup() {
-    const { onResult } = useQuery(GET_USERS_QUERY);
     const userStoreInstance = useUserStore();
-    let users = ref(userStoreInstance.users)
-    onResult(({ data }) => {
-      if (data && data.users) {
-        userStoreInstance.setUsers(data.users);
-        users.value = data.users
-      }
+    const loading = ref(true);
+
+    onMounted(async () => {
+      await userStoreInstance.fetchUsers();
+      loading.value = false;
     });
+    const users  = computed(() => userStoreInstance.userList);
+
     return {
-      users
+      users,
+      loading
     };
   },
 };
