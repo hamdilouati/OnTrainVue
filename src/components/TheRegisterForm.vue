@@ -87,7 +87,7 @@ export default {
       }
     }
 
-    return { email, password, submitForm, $v };
+    return { name,email, password, submitForm, $v };
   },
 };
 </script>
